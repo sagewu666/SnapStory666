@@ -90,13 +90,7 @@ export const CameraQuest: React.FC<CameraQuestProps> = ({ targetCount, theme, on
     }
   };
 
-  const startListening = () => {
-    playClick();
-    setTimeout(() => {
-        playSuccess();
-        // provide a short success cue, no mic UI needed here
-    }, 2000);
-  };
+  
 
   const deleteItem = (id: string) => {
       playError();
@@ -104,6 +98,7 @@ export const CameraQuest: React.FC<CameraQuestProps> = ({ targetCount, theme, on
       if (previewItem?.id === id) {
           setPreviewItem(null);
       }
+    };
   const closeValidationError = () => {
       playClick();
       setValidationError(null);
