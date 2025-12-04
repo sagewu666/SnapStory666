@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { LearnedWord } from '@/app/lib/types';
+import { LearnedWord } from '../lib/types';
 import { Story } from '@/types';
 import { Search, Volume2, X, Grid, Filter } from 'lucide-react';
 import { audioManager } from '@/app/services/audioManager';
