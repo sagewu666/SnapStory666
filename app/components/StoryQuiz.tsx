@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LearnedWord } from '@/app/lib/types';
+import { LearnedWord } from '../lib/types';
 import { CheckCircle, XCircle, Volume2, Trophy, ArrowRight, HelpCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playClick, playSuccess, playError, playFanfare } from '@/app/utils/soundUtils';
