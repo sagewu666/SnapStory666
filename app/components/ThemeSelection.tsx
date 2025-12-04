@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { THEMES, SURPRISE_THEMES } from '@/constants';
-import { Theme, ThemeCategory } from '@/app/lib/types';
+import { Theme, ThemeCategory } from '../lib/types';
 import { Sparkles, ArrowRight, Dna, Gift, Rocket, Loader2 } from 'lucide-react';
 import { playClick, playSuccess, playPop } from '@/app/utils/soundUtils';
 
