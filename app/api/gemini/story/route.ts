@@ -1,42 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { generateStoryContent, generateIllustration } from '@/app/lib/geminiService';
-import { LearnedWord, Theme, KidProfile } from '@/app/lib/types';
+import { NextResponse } from "next/server";
+import { generateStory } from "../../../lib/geminiService";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { learnedWords, theme, kidProfile, userPrompt } = await request.json();
+    const { words } = await req.json();
 
-    if (!learnedWords || !theme || !kidProfile) {
-      return NextResponse.json(
-        { error: 'Missing required fields: learnedWords, theme, or kidProfile' },
-        { status: 400 }
-      );
-    }
+    const story = await generateStory(words);
 
-    const storyContent = await generateStoryContent(
-      learnedWords as LearnedWord[],
-      theme as Theme,
-      kidProfile as KidProfile,
-      userPrompt
-    );
-
-    // Generate cover image
-    const coverImage = await generateIllustration(
-      storyContent.pages[0].text,
-      "storybook style",
-      storyContent.mainCharacterVisual
-    );
-
-    if (coverImage) {
-      storyContent.pages[0].imageUrl = coverImage;
-    }
-
-    return NextResponse.json(storyContent);
-  } catch (error) {
-    console.error('Story Generation API Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate story' },
-      { status: 500 }
-    );
+    return NextResponse.json({ story });
+  } catch (err) {
+    console.error("Story Error:", err);
+    return NextResponse.json({ error: "Story failed" }, { status: 500 });
   }
 }
+
