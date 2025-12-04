@@ -1,24 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { generateSpeech } from '@/app/lib/geminiService';
+import { NextResponse } from "next/server";
+import { synthesizeSpeech } from "../../../lib/geminiService";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { text } = await request.json();
+    const { text } = await req.json();
 
-    if (!text) {
-      return NextResponse.json(
-        { error: 'Missing text' },
-        { status: 400 }
-      );
-    }
+    const audio = await synthesizeSpeech(text);
 
-    const result = await generateSpeech(text);
-    return NextResponse.json({ audio: result });
-  } catch (error) {
-    console.error('TTS API Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate speech' },
-      { status: 500 }
-    );
+    return NextResponse.json({ audio });
+  } catch (err) {
+    console.error("Speech Error:", err);
+    return NextResponse.json({ error: "Speech failed" }, { status: 500 });
   }
 }
