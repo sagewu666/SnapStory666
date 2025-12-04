@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Story, LearnedWord, KidProfile } from '@/app/lib/types';
-import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, Volume2, Maximize2, X, Trophy, Star, Loader2, Pause, Play, BookOpen, Plus, Heart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, Volume2, Maximize2, X, Star, Loader2, Pause, Plus } from 'lucide-react';
 import { apiClient } from '@/app/utils/apiClient';
 import { playClick, playSuccess, playError, playPop, playPageTurn, playFanfare } from '@/app/utils/soundUtils';
 import { audioManager } from '@/app/services/audioManager';

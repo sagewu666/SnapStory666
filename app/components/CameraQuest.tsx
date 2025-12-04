@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { Camera, Check, RefreshCw, Loader2, ArrowRight, Volume2, Mic, X, Star, Trash2, AlertCircle } from 'lucide-react';
+import { Camera, Check, RefreshCw, Loader2, ArrowRight, Volume2, Trash2, AlertCircle } from 'lucide-react';
 import { LearnedWord, Theme } from '@/app/lib/types';
 import { apiClient } from '@/app/utils/apiClient';
 import { playClick, playSuccess, playError, playPop, playFanfare } from '@/app/utils/soundUtils';
