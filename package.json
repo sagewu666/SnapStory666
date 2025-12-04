@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "dist": "next build && rm -rf .next/cache",
     "lint": "next lint"
   },
   "dependencies": {
