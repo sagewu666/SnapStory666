@@ -15,10 +15,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
+      "@/app/*": ["./app/*"],
       "@/components/*": ["./app/components/*"],
       "@/utils/*": ["./app/utils/*"],
       "@/services/*": ["./app/services/*"],
-      "@/types/*": ["./app/types/*"]
+      "@/types": ["./types.ts"]
     },
     "strict": true,
     "noUnusedLocals": true,
