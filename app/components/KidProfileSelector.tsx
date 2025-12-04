@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { User, BookOpen, ArrowRight, Baby, GraduationCap, School } from 'lucide-react';
-import { KidProfile } from '@/app/lib/types';
+import { KidProfile } from '../lib/types';
 import { playClick } from '@/app/utils/soundUtils';
 
 interface KidProfileSelectorProps {
