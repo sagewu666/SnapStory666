@@ -16,7 +16,6 @@ export const WordMemoryGym: React.FC<WordMemoryGymProps> = ({ stories, mastery, 
   const [deck, setDeck] = useState<LearnedWord[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [sessionScore, setSessionScore] = useState(0);
 
   // Extract unique words
   const allWords = React.useMemo(() => {
