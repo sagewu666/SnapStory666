@@ -9,7 +9,8 @@ interface StoryModeSelectionProps {
   onSelectMode: (userPrompt: string | undefined) => void;
 }
 
-export const StoryModeSelection: React.FC<StoryModeSelectionProps> = ({ theme, onSelectMode }) => {
+export const StoryModeSelection: React.FC<StoryModeSelectionProps> = ({ onSelectMode }) => {
+
   const [mode, setMode] = useState<'auto' | 'manual' | null>(null);
   const [userText, setUserText] = useState('');
 
