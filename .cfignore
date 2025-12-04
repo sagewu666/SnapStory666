@@ -1,0 +1,14 @@
+# Ignore Next.js cache and other large or sensitive files for Cloudflare Pages
+.next/cache/
+.next/cache/**
+.next/traces/
+.next/*.pack
+node_modules/
+npm-debug.log*
+.env
+.env.*
+.env.local
+.DS_Store
+.vscode/
+dist/
+coverage/
