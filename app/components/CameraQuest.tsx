@@ -104,13 +104,6 @@ export const CameraQuest: React.FC<CameraQuestProps> = ({ targetCount, theme, on
       if (previewItem?.id === id) {
           setPreviewItem(null);
       }
-  };
-
-  const closePreview = () => {
-      playClick();
-      setPreviewItem(null);
-  };
-
   const closeValidationError = () => {
       playClick();
       setValidationError(null);
