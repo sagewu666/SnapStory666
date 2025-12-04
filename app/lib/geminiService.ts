@@ -1,97 +1,88 @@
-import {
-  GoogleGenerativeAI,
-  SchemaType
-} from "@google/genai";
+// app/lib/geminiService.ts
 
-const apiKey = process.env.GEMINI_API_KEY;
+import type { StoryPage, Theme, LearnedWord, KidProfile } from "./types";
 
-if (!apiKey) {
-  throw new Error("❌ Missing GEMINI_API_KEY in environment variables");
+export interface IdentifyResult {
+  word: string;
+  definition: string;
+  visualDetail: string;
+  matchesTheme?: boolean;
+  feedback?: string;
 }
 
-const client = new GoogleGenerativeAI(apiKey);
-
-//
-// Identify Object
-//
-export async function identifyObjectFromImage(base64Image: string) {
-  const model = client.getGenerativeModel({
-    model: "gemini-1.5-flash"
-  });
-
-  const result = await model.generateContent([
-    {
-      inlineData: {
-        data: base64Image,
-        mimeType: "image/jpeg"
-      }
-    },
-    {
-      text: "What object is shown in this image? Describe it shortly."
-    }
-  ]);
-
-  return result.response.text();
+export interface LookupDefinitionResult {
+  definition: string;
+  funFact: string;
+  emoji: string;
+  visualDetail: string;
 }
 
-//
-// Story Generator
-//
-export async function generateStory(words: string[]) {
-  const storyPrompt = `
-    Create a short children's story using these words:
-    ${words.join(", ")}.
-    Make it fun, simple, and suitable for English beginners.
-  `;
-
-  const model = client.getGenerativeModel({ model: "gemini-1.5-pro" });
-  const result = await model.generateContent(storyPrompt);
-
-  return result.response.text();
+export interface StoryContentResult {
+  pages: StoryPage[];
+  narratorNote?: string;
 }
 
-//
-// Illustration Generator
-//
-export async function generateIllustration(prompt: string) {
-  const model = client.getGenerativeModel({ model: "gemini-1.5-flash" });
+// 识别照片里的东西（现在先用占位结果）
+export const identifyObject = async (
+  imageBase64: string,
+  theme?: Theme
+): Promise<IdentifyResult> => {
+  return {
+    word: "mystery object",
+    definition: "A placeholder object used when AI is disabled.",
+    visualDetail: "Looks fun and colorful.",
+    matchesTheme: true
+  };
+};
 
-  const result = await model.generateContent({
-    contents: [
-      {
-        role: "user",
-        parts: [{ text: `Generate a cute children’s book style illustration of: ${prompt}` }]
-      }
-    ]
-  });
+// 查单词解释（占位）
+export const lookupWordDefinition = async (
+  word: string,
+  context?: string
+): Promise<LookupDefinitionResult> => {
+  return {
+    definition: `A placeholder definition for "${word}".`,
+    funFact: `This is a demo fun fact about "${word}".`,
+    emoji: "✨",
+    visualDetail: "Simple and kid friendly."
+  };
+};
 
-  return result.response.text();
-}
+// 生成故事内容（占位 只返回一页 demo）
+export const generateStoryContent = async (options: {
+  theme?: Theme;
+  words?: LearnedWord[];
+  kid?: KidProfile;
+}): Promise<StoryContentResult> => {
+  const wordList = (options.words || []).map((w) => w.word).join(", ");
+  const firstWord =
+    (options.words && options.words[0]?.word) || "friend";
 
-//
-// Dictionary Lookup
-//
-export async function lookupWordMeaning(word: string) {
-  const prompt = `Explain the meaning of the word "${word}" in simple English suitable for kids.`;
+  const page: StoryPage = {
+    id: "demo-page-1",
+    text: `This is a demo story page using words like ${wordList || firstWord}. Replace this with real Gemini output later.`,
+    imagePrompt: `Cute illustration with ${wordList || firstWord}.`
+  };
 
-  const model = client.getGenerativeModel({ model: "gemini-1.5-pro" });
-  const result = await model.generateContent(prompt);
+  return {
+    pages: [page],
+    narratorNote: "Demo story generated locally without calling Gemini."
+  };
+};
 
-  return result.response.text();
-}
+// 生成插画（现在先不返回真正图片）
+export const generateIllustration = async (
+  prompt: string,
+  stylePrompt?: string,
+  characterVisual?: string
+): Promise<string | null> => {
+  return null;
+};
 
-//
-// Speech Synthesis (text → base64 audio)
-//
-export async function synthesizeSpeech(text: string) {
-  const model = client.getGenerativeModel({
-    model: "gemini-1.5-flash"
-  });
-
-  const prompt = `Read this text aloud: "${text}"`;
-
-  const result = await model.generateContent(prompt);
-
-  return result.response.text();
-}
+// 文本转语音（占位 返回 null）
+export const generateSpeech = async (
+  text: string
+): Promise<string | null> => {
+  return null;
+};
 
