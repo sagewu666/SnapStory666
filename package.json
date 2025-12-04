@@ -6,8 +6,6 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-
-    "//": "Cloudflare Pages 必须用 next-on-pages 转换 Nextjs 输出",
     "dist": "npx @cloudflare/next-on-pages@latest build"
   },
 
@@ -24,8 +22,6 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "typescript": "latest",
-
-    "//": "关键：Cloudflare Pages 需要 next-on-pages 转换 Nextjs 输出格式",
     "@cloudflare/next-on-pages": "latest"
   }
 }
