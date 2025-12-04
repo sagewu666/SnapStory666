@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { LearnedWord, KidProfile } from '@/app/lib/types';
+import { LearnedWord, KidProfile } from '../lib/types';
 import { Story } from '@/types';
 import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, Volume2, Maximize2, X, Star, Loader2, Pause, Plus } from 'lucide-react';
 import { apiClient } from '@/app/utils/apiClient';
