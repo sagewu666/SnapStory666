@@ -16,7 +16,7 @@ export const CameraQuest: React.FC<CameraQuestProps> = ({ targetCount, theme, on
   const [items, setItems] = useState<LearnedWord[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewItem, setPreviewItem] = useState<LearnedWord | null>(null);
-  const [showMicFeedback, setShowMicFeedback] = useState(false);
+  
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [validationError, setValidationError] = useState<{ feedback: string, image: string } | null>(null);
 
@@ -93,9 +93,8 @@ export const CameraQuest: React.FC<CameraQuestProps> = ({ targetCount, theme, on
   const startListening = () => {
     playClick();
     setTimeout(() => {
-        setShowMicFeedback(true);
         playSuccess();
-        setTimeout(() => setShowMicFeedback(false), 2000);
+        // provide a short success cue, no mic UI needed here
     }, 2000);
   };
 
