@@ -1,115 +1,97 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import {
+  GoogleGenerativeAI,
+  SchemaType
+} from "@google/genai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const apiKey = process.env.GEMINI_API_KEY;
 
-if (!process.env.GEMINI_API_KEY) {
-  console.warn("⚠️ GEMINI_API_KEY is missing in environment variables");
+if (!apiKey) {
+  throw new Error("❌ Missing GEMINI_API_KEY in environment variables");
 }
 
-/**
- * Identify object from an image
- */
+const client = new GoogleGenerativeAI(apiKey);
+
+//
+// Identify Object
+//
 export async function identifyObjectFromImage(base64Image: string) {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-exp-1206" });
+  const model = client.getGenerativeModel({
+    model: "gemini-1.5-flash"
+  });
 
-    const response = await model.generateContent([
-      {
-        inlineData: {
-          data: base64Image,
-          mimeType: "image/jpeg",
-        },
-      },
-      { text: "Identify the object in this image with a short label." },
-    ]);
+  const result = await model.generateContent([
+    {
+      inlineData: {
+        data: base64Image,
+        mimeType: "image/jpeg"
+      }
+    },
+    {
+      text: "What object is shown in this image? Describe it shortly."
+    }
+  ]);
 
-    return response.response.text();
-  } catch (error) {
-    console.error("❌ identifyObjectFromImage error:", error);
-    throw error;
-  }
+  return result.response.text();
 }
 
-/**
- * Lookup word meaning
- */
-export async function lookupWordMeaning(word: string) {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-exp-1206" });
+//
+// Story Generator
+//
+export async function generateStory(words: string[]) {
+  const storyPrompt = `
+    Create a short children's story using these words:
+    ${words.join(", ")}.
+    Make it fun, simple, and suitable for English beginners.
+  `;
 
-    const response = await model.generateContent(
-      `Explain the meaning of the word "${word}" in one short child-friendly sentence.`
-    );
+  const model = client.getGenerativeModel({ model: "gemini-1.5-pro" });
+  const result = await model.generateContent(storyPrompt);
 
-    return response.response.text();
-  } catch (error) {
-    console.error("❌ lookupWordMeaning error:", error);
-    throw error;
-  }
+  return result.response.text();
 }
 
-/**
- * Generate illustration based on a prompt
- */
+//
+// Illustration Generator
+//
 export async function generateIllustration(prompt: string) {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-exp-1206" });
+  const model = client.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const response = await model.generateContent(
-      `Create a cute children’s-book-style illustration of: ${prompt}`
-    );
+  const result = await model.generateContent({
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: `Generate a cute children’s book style illustration of: ${prompt}` }]
+      }
+    ]
+  });
 
-    return response.response.text();
-  } catch (error) {
-    console.error("❌ generateIllustration error:", error);
-    throw error;
-  }
+  return result.response.text();
 }
 
-/**
- * Generate full storytelling
- */
-export async function generateStory(theme: string, words: string[]) {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-exp-1206" });
+//
+// Dictionary Lookup
+//
+export async function lookupWordMeaning(word: string) {
+  const prompt = `Explain the meaning of the word "${word}" in simple English suitable for kids.`;
 
-    const prompt = `
-      Write a short story for young children inspired by the theme: ${theme}.
-      Include the following vocabulary words naturally in the story:
-      ${words.join(", ")}.
-      Keep the story simple, friendly, and imaginative.
-    `;
+  const model = client.getGenerativeModel({ model: "gemini-1.5-pro" });
+  const result = await model.generateContent(prompt);
 
-    const response = await model.generateContent(prompt);
-    return response.response.text();
-  } catch (error) {
-    console.error("❌ generateStory error:", error);
-    throw error;
-  }
+  return result.response.text();
 }
 
-/**
- * Speech synthesis
- */
+//
+// Speech Synthesis (text → base64 audio)
+//
 export async function synthesizeSpeech(text: string) {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-exp-1206" });
+  const model = client.getGenerativeModel({
+    model: "gemini-1.5-flash"
+  });
 
-    const response = await model.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [{ text }],
-        },
-      ],
-      generationConfig: {
-        responseMimeType: "audio/mpeg",
-      },
-    });
+  const prompt = `Read this text aloud: "${text}"`;
 
-    return response.response;
-  } catch (error) {
-    console.error("❌ synthesizeSpeech error:", error);
-    throw error;
-  }
+  const result = await model.generateContent(prompt);
+
+  return result.response.text();
 }
+
