@@ -4,7 +4,7 @@ import { LearnedWord, KidProfile } from '@/app/lib/types';
 import { Story } from '@/types';
 import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, Volume2, Maximize2, X, Star, Loader2, Pause, Plus } from 'lucide-react';
 import { apiClient } from '@/app/utils/apiClient';
-import { playClick, playSuccess, playError, playPop, playPageTurn, playFanfare } from '@/app/utils/soundUtils';
+import { playClick, playSuccess, playError, playPop, playPageTurn } from "@/app/utils/soundUtils";
 import { audioManager } from '@/app/services/audioManager';
 import confetti from 'canvas-confetti';
 
