@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Sparkles, Pencil, ArrowRight } from 'lucide-react';
-import { Theme } from '@/app/lib/types';
+import { Theme } from '../lib/types';
 import { playClick, playSuccess } from '@/app/utils/soundUtils';
 
 interface StoryModeSelectionProps {
