@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Story, LearnedWord, Badge } from '@/app/lib/types';
 import { BADGES } from '@/constants';
-import { Grid, Award, Lock, Zap, Search } from 'lucide-react';
+import { Grid, Award, Lock, Zap, Search, Map as MapIcon } from 'lucide-react';
 import { playClick } from '@/app/utils/soundUtils';
 
 interface ExplorerPassportProps {
