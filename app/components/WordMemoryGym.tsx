@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LearnedWord } from '@/app/lib/types';
+import { LearnedWord } from '../lib/types';
 import { Story, WordMastery } from '@/types';
 import { Brain, Star, RotateCw, CheckCircle, XCircle, Volume2, Trophy, Dumbbell } from 'lucide-react';
 import { playClick, playSuccess, playError, playPop } from '@/app/utils/soundUtils';
