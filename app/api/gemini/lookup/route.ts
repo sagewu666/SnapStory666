@@ -1,29 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { lookupWordDefinition } from '@/app/lib/geminiService';
+import { NextResponse } from "next/server";
+import { lookupWordMeaning } from "../../../lib/geminiService";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { word, context, ageGroup } = await request.json();
+    const { word } = await req.json();
 
-    if (!word || !ageGroup) {
-      return NextResponse.json(
-        { error: 'Missing word or ageGroup' },
-        { status: 400 }
-      );
-    }
+    const result = await lookupWordMeaning(word);
 
-    const result = await lookupWordDefinition(
-      word,
-      context || "",
-      ageGroup
-    );
-
-    return NextResponse.json(result);
-  } catch (error) {
-    console.error('Word Lookup API Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to lookup word' },
-      { status: 500 }
-    );
+    return NextResponse.json({ result });
+  } catch (err) {
+    console.error("Lookup Error:", err);
+    return NextResponse.json({ error: "Lookup failed" }, { status: 500 });
   }
 }
+
