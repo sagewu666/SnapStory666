@@ -1,28 +1,32 @@
 {
   "name": "snapstory-nextjs",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
+
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "dist": "next build && rm -rf .next/cache",
-    "lint": "next lint"
+
+    "//": "Cloudflare Pages 必须用 next-on-pages 转换 Nextjs 输出",
+    "dist": "npx @cloudflare/next-on-pages@latest build"
   },
+
   "dependencies": {
-    "react-dom": "^19.2.0",
-    "react": "^19.2.0",
-    "@google/genai": "^1.30.0",
-    "lucide-react": "^0.555.0",
-    "canvas-confetti": "^1.9.4",
-    "next": "^15.0.0"
+    "@google/genai": "latest",
+    "canvas-confetti": "latest",
+    "lucide-react": "latest",
+    "next": "15.5.7",
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
   },
+
   "devDependencies": {
-    "@types/node": "^22.14.0",
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
-    "typescript": "~5.8.2",
-    "eslint": "^8.56.0",
-    "eslint-config-next": "^15.0.0"
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest",
+
+    "//": "关键：Cloudflare Pages 需要 next-on-pages 转换 Nextjs 输出格式",
+    "@cloudflare/next-on-pages": "latest"
   }
 }
+
