@@ -3,7 +3,7 @@ import { LearnedWord } from '@/app/lib/types';
 import { Story } from '@/types';
 import { Search, Volume2, X, Grid, Filter } from 'lucide-react';
 import { audioManager } from '@/app/services/audioManager';
-import { playClick, playPop } from '@/app/utils/soundUtils';
+import { playClick } from '@/app/utils/soundUtils';
 
 interface VocabularyListProps {
   stories: Story[];

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { LearnedWord } from '@/app/lib/types';
-import { Story, Badge } from '@/types';
+import { Story } from '@/types';
 import { BADGES } from '@/constants';
 import { Grid, Award, Lock, Zap, Search, Map as MapIcon } from 'lucide-react';
 import { playClick } from '@/app/utils/soundUtils';
