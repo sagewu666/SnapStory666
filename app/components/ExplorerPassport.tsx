@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { LearnedWord } from '../lib/types';
-import { Story } from '@/types';
-import { BADGES } from '@/constants';
+import { Story } from '../../types';
+import { BADGES } from '../../constants';
 import { Grid, Award, Lock, Zap, Search, Map as MapIcon } from 'lucide-react';
-import { playClick } from '@/app/utils/soundUtils';
+import { playClick } from '../utils/soundUtils';
 
 interface ExplorerPassportProps {
   stories: Story[];

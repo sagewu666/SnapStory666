@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
-import { THEMES, SURPRISE_THEMES } from '@/constants';
-import { Theme, ThemeCategory } from '../lib/types';
+import { THEMES, SURPRISE_THEMES } from '../../constants';
+import { Theme } from '../lib/types';
+import { ThemeCategory } from '../../types';
 import { Sparkles, ArrowRight, Dna, Gift, Rocket, Loader2 } from 'lucide-react';
-import { playClick, playSuccess, playPop } from '@/app/utils/soundUtils';
+import { playClick, playSuccess, playPop } from '../utils/soundUtils';
 
 interface ThemeSelectionProps {
   onSelectTheme: (theme: Theme, count: number) => void;

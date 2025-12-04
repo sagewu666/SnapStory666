@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { LearnedWord, KidProfile } from '../lib/types';
-import { Story } from '@/types';
+import { Story } from '../../types';
 import { ChevronLeft, ChevronRight, CheckCircle, Sparkles, Volume2, Maximize2, X, Star, Loader2, Pause, Plus } from 'lucide-react';
-import { apiClient } from '@/app/utils/apiClient';
-import { playClick, playSuccess, playError, playPop, playPageTurn } from "@/app/utils/soundUtils";
-import { audioManager } from '@/app/services/audioManager';
+import { apiClient } from '../utils/apiClient';
+import { playClick, playSuccess, playError, playPop, playPageTurn } from '../utils/soundUtils';
+import { audioManager } from '../services/audioManager';
 import confetti from 'canvas-confetti';
 
 interface StoryBookProps {
@@ -394,7 +394,7 @@ export const StoryBook: React.FC<StoryBookProps> = ({ story, onFinish, kidProfil
         // Fallback or loading audio immediately can be good
         playWordAudio(cleanWord);
         
-        const data = await apiClient.lookupWord(cleanWord, currentContent.text, kidProfile.ageGroup);
+        const data = await apiClient.lookupWord(cleanWord, currentContent.text, kidProfile.ageGroup ?? '6-8');
         if (isMountedRef.current) {
             setDictModal(prev => ({ ...prev, loading: false, data }));
         }

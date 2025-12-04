@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Story } from '@/types';
+import { Story } from '../../types';
 import { BookOpen, Clock, ArrowRight, Calendar as CalendarIcon } from 'lucide-react';
-import { playClick } from '@/app/utils/soundUtils';
+import { playClick } from '../utils/soundUtils';
 
 interface StoryLibraryProps {
   stories: Story[];

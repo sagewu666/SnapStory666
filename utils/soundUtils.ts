@@ -1,12 +1,12 @@
 
-const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext);
+const AudioContextClass = (typeof window !== 'undefined' ? window.AudioContext || (window as any).webkitAudioContext : null) as any;
 let audioCtx: AudioContext | null = null;
 
 const getCtx = () => {
-    if (!audioCtx) {
+    if (!audioCtx && AudioContextClass) {
         audioCtx = new AudioContextClass();
     }
-    if (audioCtx.state === 'suspended') {
+    if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
     }
     return audioCtx;
@@ -15,6 +15,7 @@ const getCtx = () => {
 export const playClick = () => {
     try {
         const ctx = getCtx();
+        if (!ctx) return;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
@@ -32,6 +33,7 @@ export const playClick = () => {
 export const playPop = () => {
     try {
         const ctx = getCtx();
+        if (!ctx) return;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
@@ -50,6 +52,7 @@ export const playPop = () => {
 export const playSuccess = () => {
     try {
         const ctx = getCtx();
+        if (!ctx) return;
         const t = ctx.currentTime;
         
         const playNote = (freq: number, offset: number, duration: number) => {
@@ -77,6 +80,7 @@ export const playSuccess = () => {
 export const playError = () => {
     try {
         const ctx = getCtx();
+        if (!ctx) return;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
@@ -94,6 +98,7 @@ export const playError = () => {
 export const playFanfare = () => {
     try {
         const ctx = getCtx();
+        if (!ctx) return;
         const t = ctx.currentTime;
         // Simple fanfare trumpet-like
         const play = (f: number, s: number, d: number) => {
@@ -118,6 +123,7 @@ export const playFanfare = () => {
 export const playPageTurn = () => {
     try {
         const ctx = getCtx();
+        if (!ctx) return;
         const bufferSize = ctx.sampleRate * 0.1; // 0.1s noise
         const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
         const data = buffer.getChannelData(0);

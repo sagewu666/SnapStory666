@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { LearnedWord } from '../lib/types';
-import { Story } from '@/types';
+import { Story } from '../../types';
 import { Search, Volume2, X, Grid, Filter } from 'lucide-react';
-import { audioManager } from '@/app/services/audioManager';
-import { playClick } from '@/app/utils/soundUtils';
+import { audioManager } from '../services/audioManager';
+import { playClick } from '../utils/soundUtils';
 
 interface VocabularyListProps {
   stories: Story[];

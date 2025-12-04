@@ -53,11 +53,13 @@ export interface Story {
 }
 
 export interface KidProfile {
-  id: string;
-  name: string;
+  id?: string;
+  name?: string;
   age?: number;
   avatarUrl?: string;
   favoriteThemeIds?: string[];
+  ageGroup?: '3-5' | '6-8' | '9-12';
+  englishLevel?: 'Beginner' | 'Intermediate' | 'Advanced';
   [key: string]: any;
 }
 
@@ -77,7 +79,4 @@ export interface WordMastery {
   };
 }
 
-export interface KidProfile {
-  ageGroup: '3-5' | '6-8' | '9-12';
-  englishLevel: 'Beginner' | 'Intermediate' | 'Advanced';
-}
+// KidProfile defined above includes both profile meta and preference fields

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { LearnedWord } from '../lib/types';
-import { Story, WordMastery } from '@/types';
+import { Story, WordMastery } from '../../types';
 import { Brain, Star, RotateCw, CheckCircle, XCircle, Volume2, Trophy, Dumbbell } from 'lucide-react';
-import { playClick, playSuccess, playError, playPop } from '@/app/utils/soundUtils';
-import { audioManager } from '@/app/services/audioManager';
+import { playClick, playSuccess, playError, playPop } from '../utils/soundUtils';
+import { audioManager } from '../services/audioManager';
 
 interface WordMemoryGymProps {
   stories: Story[];
@@ -16,6 +16,7 @@ export const WordMemoryGym: React.FC<WordMemoryGymProps> = ({ stories, mastery, 
   const [deck, setDeck] = useState<LearnedWord[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [sessionScore, setSessionScore] = useState(0);
 
   // Extract unique words
   const allWords = React.useMemo(() => {

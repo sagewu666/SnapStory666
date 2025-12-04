@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Home, Calendar, Map, Brain, ChevronLeft, BookImage } from 'lucide-react';
-import { playClick } from '@/app/utils/soundUtils';
+import { playClick } from '../utils/soundUtils';
 
 interface LayoutProps {
   children: React.ReactNode;

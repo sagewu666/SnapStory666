@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { User, BookOpen, ArrowRight, Baby, GraduationCap, School } from 'lucide-react';
 import { KidProfile } from '../lib/types';
-import { playClick } from '@/app/utils/soundUtils';
+import { playClick } from '../utils/soundUtils';
 
 interface KidProfileSelectorProps {
   onComplete: (profile: KidProfile) => void;

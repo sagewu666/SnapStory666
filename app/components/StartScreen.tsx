@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Sparkles, ArrowRight } from 'lucide-react';
-import { playClick, playFanfare } from '@/app/utils/soundUtils';
+import { playClick, playFanfare } from '../utils/soundUtils';
 
 interface StartScreenProps {
   onStart: () => void;
