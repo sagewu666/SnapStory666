@@ -1,306 +1,115 @@
-// Backend Gemini Service - API Key is NEVER exposed to client
-// This runs only on the server side
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-import { GoogleGenAI, Type, Modality } from "@google/genai";
-import { StoryPage, Theme, LearnedWord, KidProfile } from "./types";
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-// API Key is only available on the backend
-const API_KEY = process.env.GEMINI_API_KEY || '';
-
-if (!API_KEY) {
-  console.warn("WARNING: GEMINI_API_KEY is not set in environment variables");
+if (!process.env.GEMINI_API_KEY) {
+  console.warn("⚠️ GEMINI_API_KEY is missing in environment variables");
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
-
-const cleanBase64 = (base64: string) => {
-  return base64.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '');
-};
-
-const cleanJsonString = (text: string) => {
-  let clean = text.trim();
-  if (clean.startsWith('```json')) {
-    clean = clean.replace(/^```json/, '').replace(/```$/, '');
-  } else if (clean.startsWith('```')) {
-    clean = clean.replace(/^```/, '').replace(/```$/, '');
-  }
-  return clean.trim();
-};
-
-// --- AUDIO GENERATION (TTS) ---
-export const generateSpeech = async (text: string): Promise<string | null> => {
-  if (!text || !text.trim()) return null;
-  
+/**
+ * Identify object from an image
+ */
+export async function identifyObjectFromImage(base64Image: string) {
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-tts",
-      contents: [{ parts: [{ text: text.trim() }] }],
-      config: {
-        responseModalities: [Modality.AUDIO],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Kore' }, 
-          },
+    const model = genAI.getGenerativeModel({ model: "gemini-exp-1206" });
+
+    const response = await model.generateContent([
+      {
+        inlineData: {
+          data: base64Image,
+          mimeType: "image/jpeg",
         },
       },
-    });
+      { text: "Identify the object in this image with a short label." },
+    ]);
 
-    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-    if (base64Audio) {
-      return base64Audio; 
-    }
-    return null;
+    return response.response.text();
   } catch (error) {
-    console.error("TTS Error:", error);
-    return null;
+    console.error("❌ identifyObjectFromImage error:", error);
+    throw error;
   }
-};
+}
 
-export const identifyObject = async (
-  imageBase64: string,
-  theme?: Theme
-): Promise<{
-  word: string;
-  definition: string;
-  visualDetail: string;
-  matchesTheme: boolean;
-  feedback?: string;
-}> => {
+/**
+ * Lookup word meaning
+ */
+export async function lookupWordMeaning(word: string) {
   try {
-    const cleanData = cleanBase64(imageBase64);
-    
-    let themeInstruction = "";
-    if (theme) {
-      themeInstruction = `
-      TASK: Check if the object fits the theme: "${theme.label}" (${theme.description}).
-      
-      Examples:
-      - If Theme is "Red World" and image is a Blue Car -> matchesTheme: false, feedback: "That car is Blue, not Red! Can you find something Red?"
-      - If Theme is "Round Planet" and image is a Square Box -> matchesTheme: false, feedback: "That is square! We need something Round."
-      - If Theme is "Surprise Me" -> matchesTheme: true (Accept almost anything fun).
-      `;
-    }
+    const model = genAI.getGenerativeModel({ model: "gemini-exp-1206" });
+
+    const response = await model.generateContent(
+      `Explain the meaning of the word "${word}" in one short child-friendly sentence.`
+    );
+
+    return response.response.text();
+  } catch (error) {
+    console.error("❌ lookupWordMeaning error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Generate illustration based on a prompt
+ */
+export async function generateIllustration(prompt: string) {
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-exp-1206" });
+
+    const response = await model.generateContent(
+      `Create a cute children’s-book-style illustration of: ${prompt}`
+    );
+
+    return response.response.text();
+  } catch (error) {
+    console.error("❌ generateIllustration error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Generate full storytelling
+ */
+export async function generateStory(theme: string, words: string[]) {
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-exp-1206" });
 
     const prompt = `
-      Identify the main object in this image for a child.
-      ${themeInstruction}
-
-      Return valid JSON with:
-      1. "word": Single English noun (e.g., 'Apple').
-      2. "definition": Simple 1-sentence definition.
-      3. "visualDetail": A short visual description.
-      4. "matchesTheme": boolean (True if it matches the theme, or if no theme is strictly enforced).
-      5. "feedback": string (Encouraging feedback. If matchesTheme is false, explain why simply. If true, say something nice).
+      Write a short story for young children inspired by the theme: ${theme}.
+      Include the following vocabulary words naturally in the story:
+      ${words.join(", ")}.
+      Keep the story simple, friendly, and imaginative.
     `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: {
-        parts: [
-          { inlineData: { mimeType: 'image/jpeg', data: cleanData } },
-          { text: prompt }
-        ]
+    const response = await model.generateContent(prompt);
+    return response.response.text();
+  } catch (error) {
+    console.error("❌ generateStory error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Speech synthesis
+ */
+export async function synthesizeSpeech(text: string) {
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-exp-1206" });
+
+    const response = await model.generateContent({
+      contents: [
+        {
+          role: "user",
+          parts: [{ text }],
+        },
+      ],
+      generationConfig: {
+        responseMimeType: "audio/mpeg",
       },
-      config: {
-        responseMimeType: "application/json"
-      }
     });
 
-    if (!response.text) throw new Error("No response text");
-
-    const json = JSON.parse(cleanJsonString(response.text));
-    
-    return {
-        word: json.word?.replace(/[^a-zA-Z ]/g, "") || "Object",
-        definition: json.definition || "Something cool you found!",
-        visualDetail: json.visualDetail || "A mysterious object.",
-        matchesTheme: json.matchesTheme !== false,
-        feedback: json.feedback
-    };
-
+    return response.response;
   } catch (error) {
-    console.error("Vision API Error:", error);
-    return { 
-      word: "Mystery", 
-      definition: "A magical item.", 
-      visualDetail: "A magical item.",
-      matchesTheme: true 
-    };
+    console.error("❌ synthesizeSpeech error:", error);
+    throw error;
   }
-};
-
-export const lookupWordDefinition = async (
-  word: string,
-  context: string,
-  ageGroup: string
-): Promise<{ definition: string; funFact: string; emoji: string; visualDetail: string }> => {
-  try {
-    const prompt = `
-      Explain the word "${word}" to a ${ageGroup} year old child.
-      Context sentence from story: "${context}"
-      
-      Return JSON with:
-      1. "definition": Simple 1-sentence explanation suitable for a child.
-      2. "funFact": A short, engaging fun fact about it.
-      3. "emoji": A single relevant emoji.
-      4. "visualDetail": A clear visual description of what this looks like (for generating a picture).
-    `;
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json"
-      }
-    });
-
-    const cleanText = cleanJsonString(response.text || "{}");
-    const json = JSON.parse(cleanText);
-    return {
-        definition: json.definition || `It means ${word}.`,
-        funFact: json.funFact || "Words are magic!",
-        emoji: json.emoji || "✨",
-        visualDetail: json.visualDetail || `A colorful ${word}`
-    };
-  } catch (error) {
-    console.error("Lookup Error:", error);
-    return {
-      definition: "A special word in our story.",
-      funFact: "Keep reading to find out more!",
-      emoji: "✨",
-      visualDetail: word
-    };
-  }
-};
-
-export const generateStoryContent = async (
-  items: LearnedWord[],
-  theme: Theme,
-  kidProfile: KidProfile,
-  userPrompt?: string
-): Promise<{ title: string; pages: StoryPage[]; mainCharacterVisual: string }> => {
-  try {
-    const itemContext = items.map(i => `Item: ${i.word} (Looks like: ${i.visualDetail})`).join('\n');
-    
-    console.log("Generating story with items:", itemContext);
-
-    const prompt = `
-      You are writing a short story for a child.
-      
-      CHILD PROFILE:
-      - Age Group: ${kidProfile.ageGroup} years old
-      - English Level: ${kidProfile.englishLevel}
-      
-      THEME: ${theme.label} - ${theme.promptContext}
-      
-      REQUIRED ITEMS (You MUST include these):
-      ${items.map(i => `- ${i.word}`).join('\n')}
-      
-      USER'S IDEA: "${userPrompt || 'No specific idea, just make it fun!'}"
-      
-      RULES:
-      1. **Protagonist**: Define a consistent main character (e.g., "A brave little rabbit with a blue hat").
-      2. **Mandatory**: You MUST use all the REQUIRED ITEMS in the story.
-      3. **Highlighting**: When you use a REQUIRED ITEM, you MUST wrap it in asterisks like *this*. Example: "He found a *Red Apple* on the floor."
-      4. **Logic**: Use the visual details of the items to make the story coherent.
-      5. **Structure**: 5 Pages.
-      
-      OUTPUT: JSON ONLY.
-    `;
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            title: { type: Type.STRING },
-            mainCharacterVisual: {
-              type: Type.STRING,
-              description: "A short physical description of the main character (e.g. 'a small green robot with one eye')."
-            },
-            pages: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  pageNumber: { type: Type.INTEGER },
-                  text: { type: Type.STRING, description: "Story text with *highlighted* words." },
-                },
-                required: ["pageNumber", "text"]
-              }
-            }
-          }
-        }
-      }
-    });
-
-    const cleanText = cleanJsonString(response.text || "{}");
-    const json = JSON.parse(cleanText);
-    
-    const pages: StoryPage[] = json.pages.map((p: any) => ({
-      pageNumber: p.pageNumber,
-      text: p.text,
-      fallbackImagePrompt: "" 
-    }));
-
-    return { 
-        title: json.title || "My Adventure", 
-        pages,
-        mainCharacterVisual: json.mainCharacterVisual || "A happy adventurer"
-    };
-
-  } catch (error) {
-    console.error("Story Gen Error:", error);
-    
-    const w1 = items[0]?.word || "Item";
-    return {
-      title: "My Magic Day",
-      mainCharacterVisual: "A happy child",
-      pages: [
-        { pageNumber: 1, text: "One day, I went on a big adventure." },
-        { pageNumber: 2, text: `I found a *${w1}*! It was very cool.` },
-        { pageNumber: 3, text: `Then I saw something else.` },
-        { pageNumber: 4, text: `We played together.` },
-        { pageNumber: 5, text: "The End." }
-      ]
-    };
-  }
-};
-
-export const generateIllustration = async (
-  prompt: string,
-  style: string,
-  characterVisual: string
-): Promise<string | null> => {
-  try {
-    const finalPrompt = `Kids book illustration, ${style}. ${characterVisual}. Action: ${prompt}. Colorful, cute, high quality. No text, no words, no letters, no labels, no signboards.`;
-    
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image',
-      contents: {
-        parts: [{ text: finalPrompt }]
-      },
-      config: {
-        imageConfig: {
-            aspectRatio: "1:1",
-        }
-      }
-    });
-    
-    if (response.candidates?.[0]?.content?.parts) {
-        for (const part of response.candidates[0].content.parts) {
-            if (part.inlineData) {
-                 return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-            }
-        }
-    }
-    console.warn("No image data in response for prompt:", finalPrompt);
-    return null;
-  } catch (error) {
-    console.error("Illustration Gen Error:", error);
-    return null;
-  }
-};
+}
