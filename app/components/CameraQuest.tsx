@@ -104,6 +104,11 @@ export const CameraQuest: React.FC<CameraQuestProps> = ({ targetCount, theme, on
       setValidationError(null);
   };
 
+  const closePreview = () => {
+      playClick();
+      setPreviewItem(null);
+  };
+
   if (items.length >= targetCount && !previewItem && !isProcessing && !validationError) {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center p-8 animate-pop-in bg-slate-50">
