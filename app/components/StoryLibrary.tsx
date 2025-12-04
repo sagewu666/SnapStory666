@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Story } from '@/app/lib/types';
+import { Story } from '@/types';
 import { BookOpen, Clock, ArrowRight, Calendar as CalendarIcon } from 'lucide-react';
 import { playClick } from '@/app/utils/soundUtils';
 
