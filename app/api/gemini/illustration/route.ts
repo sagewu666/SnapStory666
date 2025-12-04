@@ -1,29 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { generateIllustration } from '@/app/lib/geminiService';
+import { NextResponse } from "next/server";
+import { generateIllustration } from "../../../lib/geminiService";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { prompt, style, characterVisual } = await request.json();
+    const { prompt } = await req.json();
 
-    if (!prompt) {
-      return NextResponse.json(
-        { error: 'Missing prompt' },
-        { status: 400 }
-      );
-    }
+    const result = await generateIllustration(prompt);
 
-    const result = await generateIllustration(
-      prompt,
-      style || "storybook style",
-      characterVisual || "a character"
-    );
-
-    return NextResponse.json({ imageUrl: result });
-  } catch (error) {
-    console.error('Illustration Generation API Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate illustration' },
-      { status: 500 }
-    );
+    return NextResponse.json({ result });
+  } catch (err) {
+    console.error("Illustration Error:", err);
+    return NextResponse.json({ error: "Illustration failed" }, { status: 500 });
   }
 }
